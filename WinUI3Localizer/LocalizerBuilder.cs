@@ -2,7 +2,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -25,6 +29,7 @@ public class LocalizerBuilder
     private string defaultStringResourcesFileName = "Resources.resw";
 
     private string stringResourcesFileXPath = "//root/data";
+    private string apiUrl = "http://localhost:5000/api/App/Localizations";
 
     private ILogger? logger;
 
@@ -144,6 +149,7 @@ public class LocalizerBuilder
         }
 
         Localizer localizer = new(this.options);
+        await FetchTranslationsFromApi();
 
         if (this.logger is not null)
         {
@@ -170,7 +176,28 @@ public class LocalizerBuilder
         Localizer.Set(localizer);
         return localizer;
     }
+    private async Task FetchTranslationsFromApi()
+    {
+        if (string.IsNullOrEmpty(this.apiUrl))
+        {
+            throw new InvalidOperationException("API URL must be set.");
+        }
 
+        using HttpClient client = new();
+        List<AppLocalization>? translations = await client.GetFromJsonAsync<List<AppLocalization>>(this.apiUrl);
+        if (translations == null) throw new InvalidOperationException("Translations are empty.");
+        IEnumerable<IGrouping<string, AppLocalization>> languageGroups = translations.GroupBy(t => t.Language);
+        foreach (IGrouping<string, AppLocalization> group in languageGroups)
+        {
+            LanguageDictionary dictionary = new(group.Key);
+            foreach (AppLocalization translation in group)
+            {
+                LanguageDictionary.Item item = CreateLanguageDictionaryItem(translation.Key, translation.Value);
+                dictionary.AddItem(item);
+            }
+            this.languageDictionaries.Add(dictionary);
+        }
+    }
     private static LanguageDictionary? CreateLanguageDictionaryFromStringResourcesFile(string sourceName, string filePath, string fileXPath)
     {
         if (CreateStringResourceItemsFromResourcesFile(
@@ -255,5 +282,13 @@ public class LocalizerBuilder
             Name: $"{prefix}{node.Attributes?["name"]?.Value ?? string.Empty}",
             Value: node["value"]?.InnerText ?? string.Empty,
             Comment: string.Empty);
+    }
+    public class AppLocalization
+    {
+        public string Key { get; set; }
+
+        public string Value { get; set; }
+
+        public string Language { get; set; }
     }
 }

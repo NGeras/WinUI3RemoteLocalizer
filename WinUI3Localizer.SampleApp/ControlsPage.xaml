@@ -24,7 +24,7 @@
                 HorizontalContentAlignment="Stretch"
                 HeaderText="TextBox">
                 <TextBox
-                    l:Uids.Uid="ControlsPage_TextBox"
+                    l:Uids.Uid="Card_number"
                     PointerEntered="LocalizedItem_PointerEntered" />
                 <local:ExamplePresenter.XamlSampleCode>
                     <x:String xml:space="preserve">&lt;TextBox l:Uids.Uid="ControlsPage_TextBox" /&gt;</x:String>
@@ -132,7 +132,7 @@
             <!--  ToggleSwitch  -->
             <local:ExamplePresenter HeaderText="ToggleSwitch">
                 <ToggleSwitch
-                    l:Uids.Uid="ControlsPage_ToggleSwitch"
+                    l:Uids.Uid="tsShowNewClients"
                     PointerEntered="LocalizedItem_PointerEntered" />
                 <local:ExamplePresenter.XamlSampleCode>
                     <x:String xml:space="preserve">&lt;ToggleSwitch l:Uids.Uid="ControlsPage_ToggleSwitch" /&gt;</x:String>

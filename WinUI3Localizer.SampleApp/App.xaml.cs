@@ -116,7 +116,7 @@ public partial class App : Application
 #endif
 
         _ = await new LocalizerBuilder()
-            .AddStringResourcesFolderForLanguageDictionaries(StringsFolderPath)
+            //.AddStringResourcesFolderForLanguageDictionaries(StringsFolderPath)
             //.SetLogger(Host.Services
             //    .GetRequiredService<ILoggerFactory>()
             //    .CreateLogger<Localizer>())

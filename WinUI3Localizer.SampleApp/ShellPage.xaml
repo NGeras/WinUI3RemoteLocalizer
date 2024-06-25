@@ -54,7 +54,7 @@
                         SelectionChanged="LanguagesComboBox_SelectionChanged">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="local:LanguageItem">
-                                <TextBlock l:Uids.Uid="{x:Bind UidKey}" />
+                                <TextBlock Text="{x:Bind Language}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
